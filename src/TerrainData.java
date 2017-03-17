@@ -10,6 +10,17 @@ public class TerrainData
 	private ByteBuffer byteCells;
 	private IntBuffer mCells;
 
+	public TerrainData(Point originChunk, int chunkCount){
+		originBlockX = originChunk.X * 16;
+		originBlockZ = originChunk.Y * 16;
+		int blockCount = chunkCount * 16;
+		endBlockX = originBlockX + blockCount;
+		endBlockZ = originBlockZ + blockCount;
+		
+		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount);
+		mCells = byteCells.asIntBuffer();
+	}
+	
 	public boolean isCellAvaliable(int x, int y, int z)
 	{
 		return originBlockX < x && endBlockX > x && y >= 0 && y < 128 && originBlockZ < z && endBlockZ > z;
