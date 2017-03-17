@@ -62,4 +62,14 @@ public class TerrainData
 	public void setCellFast(int index, int value){
 		mCells.put(index, value);
 	}
+	
+	public void getBytes(int index, byte[] buffer) {
+		byteCells.position(index);
+		byteCells.get(buffer);
+	}
+	
+	public void setBytes(int index, byte[] buffer) {
+		byteCells.position(index);
+		byteCells.put(buffer);
+	}
 }
