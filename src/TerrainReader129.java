@@ -43,11 +43,6 @@ public class TerrainReader129 implements TerrainReader, Closeable
 	}
 
 	@Override
-	public void save()
-	{
-	}
-
-	@Override
 	public byte[] getChunk(Point chunk)
 	{
 		try
