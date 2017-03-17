@@ -37,4 +37,18 @@ public class TerrainData
 	{
 		return mCells.get(index);
 	}
+	
+	public void setCell(int x, int y, int z, int value){
+		if(isCellAvaliable(x, y, z)){
+			setCellFast(x, y, z, value);
+		}
+	}
+	
+	public void setCellFast(int x, int y, int z, int value){
+		setCellFast(calculateCellIndex(x, y, z), value);
+	}
+	
+	public void setCellFast(int index, int value){
+		mCells.put(index, value);
+	}
 }
