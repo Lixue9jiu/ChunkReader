@@ -2,7 +2,7 @@ import java.io.*;
 import java.nio.*;
 import java.util.*;
 
-public class TerrainReader129 implements TerrainReader, Closeable
+public class TerrainReader129 implements TerrainReader
 {
 	private final long EntrySize = 768444;
 	private final long ChunkSize = 132112;
@@ -17,7 +17,6 @@ public class TerrainReader129 implements TerrainReader, Closeable
 	@Override
 	public void load(String path)
 	{
-		// TODO: Implement this method
 		try
 		{
 			mFile = new RandomAccessFile(path, "rw");
