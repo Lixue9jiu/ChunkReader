@@ -4,7 +4,7 @@ import java.nio.*;
 public interface TerrainReader
 {
 	void load(String path);
-	void save();
-	byte[] getChunk(Point chunk);
-	void setChunk(Point chunk, byte[] buffer);
+	void getChunk(Point chunk, TerrainData data);
+	void setChunk(Point chunk, TerrainData data);
+	void close() throws IOException;
 }

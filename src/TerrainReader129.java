@@ -2,36 +2,39 @@ import java.io.*;
 import java.nio.*;
 import java.util.*;
 
-public class TerrainReader129 implements TerrainReader, Closeable
+public class TerrainReader129 implements TerrainReader
 {
 	private final long EntrySize = 768444;
 	private final long ChunkSize = 132112;
-	
+
 	private int chunkEnd;
-	
+
 	private RandomAccessFile mFile;
 	private HashMap<Point, Long> chunkOffsets;
-	
+
 	private ByteBuffer mBuffer;
 
 	@Override
 	public void load(String path)
 	{
-		// TODO: Implement this method
 		try
 		{
 			mFile = new RandomAccessFile(path, "rw");
 			chunkOffsets = new HashMap<Point, Long>();
 			mBuffer = ByteBuffer.allocateDirect(131072);
 			chunkEnd = 0;
-			while(true) {
+			while (true)
+			{
 				int x = readInt(mFile);
 				int y = readInt(mFile);
 				int off = readInt(mFile);
-				if (off != -1){
+				if (off != -1)
+				{
 					chunkOffsets.put(new Point(x, y), EntrySize + off * ChunkSize);
 					chunkEnd++;
-				}else {
+				}
+				else
+				{
 					break;
 				}
 			}
@@ -43,36 +46,50 @@ public class TerrainReader129 implements TerrainReader, Closeable
 	}
 
 	@Override
-	public void save()
-	{
-	}
-
-	@Override
-	public byte[] getChunk(Point chunk)
+	public void getChunk(Point chunk, TerrainData data)
 	{
 		try
 		{
-			if(chunkOffsets.containsKey(chunk)){
+			if (chunkOffsets.containsKey(chunk))
+			{
 				mFile.seek(chunkOffsets.get(chunk) + 16);
 				mFile.read(mBuffer.array());
-				return mBuffer.array();
+				mBuffer.position(0);
+				int index, k;
+				for (int x = 0; x < 16; x++){
+					for (int y = 0; y < 16; y++){
+						index = data.calculateCellIndex(chunk.X * 16 + x, 0, chunk.Y * 16 + y);
+						k = 0;
+						while(k < 128){
+							data.setCellFast(index, mBuffer.getInt());
+							k++;
+							index++;
+						}
+					}
+				}
 			}
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		return null;
 	}
 
 	@Override
-	public void setChunk(Point chunk, byte[] buffer)
+	public void setChunk(Point chunk, TerrainData data)
 	{
-		try {
-			if (chunkOffsets.containsKey(chunk)){
+		try
+		{
+			int index = data.calculateCellIndex(chunk.X * 16, 0, chunk.Y * 16);
+			data.getBytes(index, mBuffer.array());
+			
+			if (chunkOffsets.containsKey(chunk))
+			{
 				mFile.seek(chunkOffsets.get(chunk) + 16);
-				mFile.write(buffer);
-			}else if(chunkEnd < 65537) {
+				mFile.write(mBuffer.array());
+			}
+			else if (chunkEnd < 65537)
+			{
 				mFile.seek(chunkEnd * 12);
 				writeInt(mFile, chunk.X);
 				writeInt(mFile, chunk.Y);
@@ -80,11 +97,13 @@ public class TerrainReader129 implements TerrainReader, Closeable
 				long off = EntrySize + chunkEnd * ChunkSize;
 				chunkOffsets.put(chunk, off);
 				chunkEnd++;
-				
-				mFile.seek(off);
-				mFile.write(buffer);
+
+				mFile.seek(off + 16);
+				mFile.write(mBuffer.array());
 			}
-		}catch(IOException e){
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -95,12 +114,14 @@ public class TerrainReader129 implements TerrainReader, Closeable
 		mFile.close();
 		mBuffer = null;
 	}
-	
-	private static int readInt(RandomAccessFile f) throws IOException{
+
+	private static int readInt(RandomAccessFile f) throws IOException
+	{
 		return f.readByte() << 24 + f.readByte() << 16 + f.readByte() << 8 + f.readByte();
 	}
-	
-	private static void writeInt(RandomAccessFile f, int i) throws IOException{
+
+	private static void writeInt(RandomAccessFile f, int i) throws IOException
+	{
 		f.write((byte)(i >> 24));
 		f.write((byte)(i >> 16));
 		f.write((byte)(i >> 8));
