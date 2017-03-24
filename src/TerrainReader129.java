@@ -4,7 +4,7 @@ import java.util.*;
 
 public class TerrainReader129 implements TerrainReader
 {
-	private final long EntrySize = 768444;
+	private final long EntrySize = 65536;
 	private final long ChunkSize = 132112;
 
 	private int chunkEnd;
@@ -55,16 +55,16 @@ public class TerrainReader129 implements TerrainReader
 				mFile.seek(chunkOffsets.get(chunk) + 16);
 				mFile.read(mBuffer.array());
 				mBuffer.position(0);
-				int index, k;
+				int index;
 				for (int x = 0; x < 16; x++){
 					for (int y = 0; y < 16; y++){
 						index = data.calculateCellIndex(chunk.X * 16 + x, 0, chunk.Y * 16 + y);
-						k = 0;
-						while(k < 128){
-							data.setCellFast(index, mBuffer.getInt());
-							k++;
-							index++;
-						}
+						data.setBytes(index * 4, mBuffer.array());
+//						while(k < 128){
+//							data.setCellFast(index, mBuffer.getInt());
+//							k++;
+//							index++;
+//						}
 					}
 				}
 			}

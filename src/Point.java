@@ -12,11 +12,11 @@ public class Point
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o.getClass().isAssignableFrom(Point.class))
-		{
-			Point p  = (Point)o;
-			return X == p.X && Y == p.Y;
-		}
-		return false;
+		return o instanceof Point && equals((Point)o);
+	}
+
+	public boolean equals(Point p)
+	{
+		return X == p.X && Y == p.Y;
 	}
 }
