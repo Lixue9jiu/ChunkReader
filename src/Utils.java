@@ -17,11 +17,12 @@ public class Utils
 		f.write((byte)i);
 	}
 	
-	public static final File UnzipFile(String zipPath, String outPath, String filename) {
+	public static final File UnzipFile(String zipPath, String filename) {
         File outFile = null;
         try {
             File file = new File(zipPath);
-            outFile = new File(outPath + File.separator + filename);
+            outFile = File.createTempFile(filename, null);
+			outFile.deleteOnExit();
             ZipFile zipFile = new ZipFile(file);
             ZipEntry entry = zipFile.getEntry(filename);
             if (entry == null) {
@@ -40,6 +41,7 @@ public class Utils
             zipFile.close();
         } catch (Exception e) {
             e.printStackTrace();
+			return null;
         } finally {
             System.out.println("done");
         }
