@@ -19,4 +19,10 @@ public class Point
 	{
 		return X == p.X && Y == p.Y;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		return X + Y;
+	}
 }
