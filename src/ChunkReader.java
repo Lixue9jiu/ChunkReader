@@ -3,28 +3,38 @@ import javax.security.auth.*;
 
 public class ChunkReader implements Destroyable
 {
+	private File m_file;
+	
 	private TerrainData m_TerrainData;
 	private TerrainReader m_TerrainReader;
-	private boolean isAvaliable;
+	private boolean isAvaliable = true;
 
-	private ChunkReader(String path, TerrainReader reader, Point origin, int chunkCount)
+	public ChunkReader(File file)
 	{
-		m_TerrainReader = reader;
-		m_TerrainReader.load(path);
-
-		m_TerrainData = new TerrainData(origin, chunkCount);
-		loadTerrain();
-
-		isAvaliable = true;
-	}
-
-	public static ChunkReader create(String path, Point origin, int chunkCount)
-	{
-		if (new File(path).getName().equals("Chunks32.dat"))
-		{
-			return new ChunkReader(path, new TerrainReader129(), origin, chunkCount);
+		m_file = file;
+		String name = file.getName();
+		if (name.equals("Chunks.dat")){
+			m_TerrainReader = new TerrainReader124();
+		}else if (name.equals("Chunks32.dat")){
+			m_TerrainReader = new TerrainReader129();
+		}else{
+			isAvaliable = false;
+			return;
 		}
-		throw new RuntimeException("unknown chunk file name");
+	}
+	
+	public boolean load(World.Option opt){
+		if (!isAvaliable) {
+			return false;
+		}
+		m_TerrainReader.load(m_file.getAbsolutePath());
+		m_TerrainData = new TerrainData(opt.origin, opt.chunkCount);
+		loadTerrain();
+		return true;
+	}
+	
+	public File save(){
+		return m_file;
 	}
 
 	@Override

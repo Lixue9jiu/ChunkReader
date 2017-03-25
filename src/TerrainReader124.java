@@ -1,27 +1,26 @@
 import java.io.*;
-import java.nio.*;
 import java.util.*;
+import java.nio.*;
 
-public class TerrainReader129 implements TerrainReader
+public class TerrainReader124 implements TerrainReader
 {
-	private final long EntrySize = 768444;
-	private final long ChunkSize = 132112;
-
-	private int chunkEnd;
+	private final int entrySize = 768444;
+	private final int chunkSize = 66576;
 
 	private RandomAccessFile mFile;
-	private HashMap<Point, Long> chunkOffsets;
-
+	private HashMap<Point, Integer> chunkOffsets;
 	private ByteBuffer mBuffer;
-
+	
+	private int chunkEnd;
+	
 	@Override
 	public void load(String path)
 	{
 		try
 		{
 			mFile = new RandomAccessFile(path, "rw");
-			chunkOffsets = new HashMap<Point, Long>();
-			mBuffer = ByteBuffer.allocateDirect(131072);
+			chunkOffsets = new HashMap<>();
+			mBuffer = ByteBuffer.allocateDirect(65536);
 			chunkEnd = 0;
 			while (true)
 			{
@@ -30,7 +29,7 @@ public class TerrainReader129 implements TerrainReader
 				int off = Utils.readInt(mFile);
 				if (off != -1)
 				{
-					chunkOffsets.put(new Point(x, y), EntrySize + off * ChunkSize);
+					chunkOffsets.put(new Point(x, y), off);
 					chunkEnd++;
 				}
 				else
@@ -55,16 +54,17 @@ public class TerrainReader129 implements TerrainReader
 				mFile.seek(chunkOffsets.get(chunk) + 16);
 				mFile.read(mBuffer.array());
 				mBuffer.position(0);
-				int index;
+				int index, k;
 				for (int x = 0; x < 16; x++){
 					for (int y = 0; y < 16; y++){
 						index = data.calculateCellIndex(chunk.X * 16 + x, 0, chunk.Y * 16 + y);
-						data.setBytes(index * 4, mBuffer.array());
-//						while(k < 128){
-//							data.setCellFast(index, mBuffer.getInt());
-//							k++;
-//							index++;
-//						}
+//						data.setBytes(index * 2, mBuffer.array());
+						k = 0;
+						while(k < 128){
+							data.setCellFast(index, mBuffer.getShort());
+							k++;
+							index++;
+						}
 					}
 				}
 			}
@@ -82,7 +82,7 @@ public class TerrainReader129 implements TerrainReader
 		{
 			int index = data.calculateCellIndex(chunk.X * 16, 0, chunk.Y * 16);
 			data.getBytes(index, mBuffer.array());
-			
+
 			if (chunkOffsets.containsKey(chunk))
 			{
 				mFile.seek(chunkOffsets.get(chunk) + 16);
@@ -91,14 +91,14 @@ public class TerrainReader129 implements TerrainReader
 			else if (chunkEnd < 65537)
 			{
 				mFile.seek(chunkEnd * 12);
+				int off = entrySize + chunkEnd * chunkSize;
 				Utils.writeInt(mFile, chunk.X);
 				Utils.writeInt(mFile, chunk.Y);
-				Utils.writeInt(mFile, chunkEnd);
-				long off = EntrySize + chunkEnd * ChunkSize;
+				Utils.writeInt(mFile, off);
 				chunkOffsets.put(chunk, off);
 				chunkEnd++;
 
-				mFile.setLength(mFile.length() + ChunkSize + 16);
+				mFile.setLength(mFile.length() + chunkSize + 16);
 				writeMagic(mFile);
 				mFile.seek(off);
 				mFile.write(mBuffer.array());
@@ -114,11 +114,10 @@ public class TerrainReader129 implements TerrainReader
 	public void close() throws IOException
 	{
 		mFile.close();
-		mBuffer = null;
 	}
 	
 	private static void writeMagic(RandomAccessFile f) throws IOException{
 		Utils.writeInt(f, 0xDEADBEEF);
-		Utils.writeInt(f, 0xFFFFFFFE);
+		Utils.writeInt(f, 0xFFFFFFFF);
 	}
 }
