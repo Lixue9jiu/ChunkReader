@@ -1,6 +1,7 @@
 import java.io.*;
+import javax.security.auth.*;
 
-public class World
+public class World implements Destroyable
 {
 	private boolean isAvaliable;
 	private Option m_opt;
@@ -57,6 +58,18 @@ public class World
 	
 	public ChunkReader Chunks(){
 		return m_chunk;
+	}
+
+	@Override
+	public void destroy() throws DestroyFailedException
+	{
+		m_chunk.destroy();
+	}
+
+	@Override
+	public boolean isDestroyed()
+	{
+		return isAvaliable = m_chunk.isDestroyed();
 	}
 
 	private boolean initWorld()

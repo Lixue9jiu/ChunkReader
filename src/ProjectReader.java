@@ -1,6 +1,7 @@
 import java.io.*;
+import javax.security.auth.*;
 
-public class ProjectReader
+public class ProjectReader implements Destroyable
 {
 	private File m_file;
 	
@@ -14,5 +15,18 @@ public class ProjectReader
 	
 	public File save(){
 		return m_file;
+	}
+
+	@Override
+	public void destroy() throws DestroyFailedException
+	{
+		// TODO: Implement this method
+	}
+
+	@Override
+	public boolean isDestroyed()
+	{
+		// TODO: Implement this method
+		return false;
 	}
 }
