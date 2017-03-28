@@ -11,10 +11,10 @@ public class Utils
 
 	public static final void writeInt(RandomAccessFile f, int i) throws IOException
 	{
-		f.write((byte)(i >> 24));
-		f.write((byte)(i >> 16));
-		f.write((byte)(i >> 8));
-		f.write((byte)i);
+		f.write(0xff & (i));
+		f.write(0xff & (i >> 8));
+		f.write(0xff & (i >> 16));
+		f.write(0xff & (i >> 24));
 	}
 	
 	public static final File UnzipFile(String zipPath, String filename) {
