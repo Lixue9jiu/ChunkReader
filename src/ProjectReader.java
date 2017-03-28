@@ -41,7 +41,6 @@ public class ProjectReader implements Destroyable {
                     case XmlPullParser.START_TAG:
                         if (parser.getName().equals("Values")) {
                             fatherNodes.push(parser.getAttributeValue(0));
-							System.out.println(fatherNodes.peek());
                         }
 						
 						if(fatherNodes.isEmpty()) {
@@ -66,7 +65,6 @@ public class ProjectReader implements Destroyable {
             isAvaliable = false;
             e.printStackTrace();
         }
-		System.out.println("project load finished");
         return isAvaliable;
     }
 

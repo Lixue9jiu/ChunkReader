@@ -17,16 +17,19 @@ public class World implements Destroyable
 
 		File project;
 		isAvaliable = true;
+		long time = System.currentTimeMillis();
+		System.out.println("unziping");
 		if ((project = Utils.UnzipFile(path, "Project.xml")) != null) {
 			m_project = new ProjectReader(project);
 			File chunk;
-			if ((chunk = Utils.UnzipFile(path, "Chunks.dat")) != null || (chunk = Utils.UnzipFile(path, "Chunks32.dat")) != null) {
-				m_chunk = new ChunkReader(chunk);
+			if ((chunk = Utils.UnzipFile(path, "Chunks.dat")) != null) {
+				m_chunk = new ChunkReader(chunk, false);
+			}else if((chunk = Utils.UnzipFile(path, "Chunks32.dat")) != null) {
+				m_chunk = new ChunkReader(chunk, true);
 			}
 		}
-		System.out.println("unzip finished");
+		System.out.println("unzip finished, time: " + (System.currentTimeMillis() - time));
 		isAvaliable = initWorld();
-		System.out.println("init world finished");
 	}
 	
 	public World(String path)

@@ -6,7 +6,7 @@ public class Utils
 	
 	public static final int readInt(RandomAccessFile f) throws IOException
 	{
-		return f.readByte() << 24 + f.readByte() << 16 + f.readByte() << 8 + f.readByte();
+		return (f.read() & 0xff) | (f.read() & 0xff) << 8 | (f.read() & 0xff) << 16 | (f.read() & 0xff) << 24;
 	}
 
 	public static final void writeInt(RandomAccessFile f, int i) throws IOException

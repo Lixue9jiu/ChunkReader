@@ -10,10 +10,12 @@ public class TerrainData
 	public final int originBlockZ;
 	public final int endBlockX;
 	public final int endBlockZ;
-
+	
 	private ByteBuffer byteCells;
 	private IntBuffer mCells;
 
+	private int originOffset;
+	
 	public TerrainData(Point originChunk, int chunkCount)
 	{
 		originChunkX = originChunk.X;
@@ -26,8 +28,11 @@ public class TerrainData
 		endBlockX = originBlockX + blockCount;
 		endBlockZ = originBlockZ + blockCount;
 
-		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount);
+		originOffset = originBlockX * 128 + originBlockZ * 2048;
+		
+		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount * 128);
 		mCells = byteCells.asIntBuffer();
+		System.out.println(String.format(("chunk created\nchunk count: %d\nbuffer size: %d"), new Object[]{ chunkCount * chunkCount, byteCells.capacity() }));
 	}
 
 	public boolean isCellAvaliable(int x, int y, int z)
@@ -37,7 +42,7 @@ public class TerrainData
 
 	public int calculateCellIndex(int x, int y, int z)
 	{
-		return x * 128 + y + z * 2048;
+		return x * 128 + y + z * 2048 - originOffset;
 	}
 
 	public int getCell(int x, int y, int z)

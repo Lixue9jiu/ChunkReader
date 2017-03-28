@@ -9,17 +9,13 @@ public class ChunkReader implements Destroyable
 	private TerrainReader m_TerrainReader;
 	private boolean isAvaliable = true;
 
-	public ChunkReader(File file)
+	public ChunkReader(File file, boolean is32)
 	{
 		m_file = file;
-		String name = file.getName();
-		if (name.equals("Chunks.dat")){
+		if (!is32){
 			m_TerrainReader = new TerrainReader124();
-		}else if (name.equals("Chunks32.dat")){
+		}else {
 			m_TerrainReader = new TerrainReader129();
-		}else{
-			isAvaliable = false;
-			return;
 		}
 	}
 	
@@ -27,7 +23,9 @@ public class ChunkReader implements Destroyable
 		if (!isAvaliable) {
 			return false;
 		}
+		System.out.println("loading terrain");
 		m_TerrainReader.load(m_file.getAbsolutePath());
+		System.out.println("finished");
 		m_TerrainData = new TerrainData(opt.origin, opt.chunkCount);
 		loadTerrain();
 		return true;
