@@ -24,7 +24,9 @@ public class World implements Destroyable
 				m_chunk = new ChunkReader(chunk);
 			}
 		}
+		System.out.println("unzip finished");
 		isAvaliable = initWorld();
+		System.out.println("init world finished");
 	}
 	
 	public World(String path)

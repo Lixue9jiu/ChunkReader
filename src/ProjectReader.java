@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
+import java.util.*;
 
 /**
  * 使用PULL解析器解释Project.xml
@@ -33,37 +34,39 @@ public class ProjectReader implements Destroyable {
             XmlPullParser parser = xmlFactory.newPullParser();
             parser.setInput(m_stream, "UTF-8");
             int event = parser.getEventType();
-            String fatherNode = "";
-            boolean isChangingFather = true;
+            Stack<String> fatherNodes = new Stack<>();
+			gameInfo = new GameInfo();
             while (event != XmlPullParser.END_DOCUMENT) {
                 switch (event) {
-                    case XmlPullParser.START_DOCUMENT:
-                        gameInfo = new GameInfo();
-                        break;
                     case XmlPullParser.START_TAG:
-                        if (isChangingFather) {
-                            fatherNode = parser.getAttributeValue(0);
-                            isChangingFather = false;
+                        if (parser.getName().equals("Values")) {
+                            fatherNodes.push(parser.getAttributeValue(0));
+							System.out.println(fatherNodes.peek());
                         }
-                        if ("GameInfo".equals(fatherNode)) {
+						
+						if(fatherNodes.isEmpty()) {
+							break;
+						}
+                        if ("GameInfo".equals(fatherNodes.peek())) {
                             gameInfo.setValue(parser);
-                        }else if ("Player".equals(fatherNode) && "SpawnPosition".equals(parser.getAttributeValue(0))) {
+                        }else if ("Player".equals(fatherNodes.peek()) && "SpawnPosition".equals(parser.getAttributeValue(0))) {
                             String[] str = parser.getAttributeValue(2).split(",");
                             opt.origin = new Point(((int) Float.parseFloat(str[0])) / 16, ((int) Float.parseFloat(str[2])) / 16);
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        if (fatherNode.equals(parser.getAttributeValue(0))) {
-                            isChangingFather = true;
+                        if (parser.getName().equals("Values")) {
+                            fatherNodes.pop();
                         }
                         break;
                 }
-                parser.next();
+                event = parser.next();
             }
         } catch (Exception e) {
             isAvaliable = false;
             e.printStackTrace();
         }
+		System.out.println("project load finished");
         return isAvaliable;
     }
 
