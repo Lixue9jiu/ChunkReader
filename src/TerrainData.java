@@ -32,7 +32,7 @@ public class TerrainData
 		
 		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount * 128);
 		mCells = byteCells.asIntBuffer();
-		System.out.println(String.format(("chunk created\nchunk count: %d\nbuffer size: %d"), new Object[]{ chunkCount * chunkCount, byteCells.capacity() }));
+		System.out.println(String.format(("terrain loading finished\nchunk count: %d\nbuffer size: %d\norigin: %d, %d"), new Object[]{ chunkCount * chunkCount, byteCells.capacity(), originBlockX, originBlockZ }));
 	}
 
 	public boolean isCellAvaliable(int x, int y, int z)

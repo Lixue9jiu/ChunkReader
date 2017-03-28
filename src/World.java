@@ -29,7 +29,10 @@ public class World implements Destroyable
 			}
 		}
 		System.out.println("unzip finished, time: " + (System.currentTimeMillis() - time));
+		System.out.println("init world...");
+		time = System.currentTimeMillis();
 		isAvaliable = initWorld();
+		System.out.println("init world finished, time: " + (System.currentTimeMillis() - time));
 	}
 	
 	public World(String path)
@@ -83,6 +86,6 @@ public class World implements Destroyable
 	public class Option
 	{
 		public Point origin;
-		public int chunkCount = 5;
+		public int chunkCount = 16;
 	}
 }

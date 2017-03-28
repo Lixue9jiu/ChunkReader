@@ -39,13 +39,12 @@ public class Utils
             input.close();
             output.close();
             zipFile.close();
+			System.out.println("done unziping " + filename);
+			return outFile;
         } catch (Exception e) {
             e.printStackTrace();
 			return null;
-        } finally {
-            System.out.println("done");
         }
-        return outFile;
     }
 	
 	public static final boolean ZipFiles(File[] srcfile, File zipfile) {
@@ -64,12 +63,11 @@ public class Utils
                 in.close();
             }
             out.close();
+			System.out.println("done ziping");
 			return true;
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            System.out.println("done");
+			return false;
         }
-		return false;
     }
 }

@@ -23,9 +23,7 @@ public class ChunkReader implements Destroyable
 		if (!isAvaliable) {
 			return false;
 		}
-		System.out.println("loading terrain");
 		m_TerrainReader.load(m_file.getAbsolutePath());
-		System.out.println("finished");
 		m_TerrainData = new TerrainData(opt.origin, opt.chunkCount);
 		loadTerrain();
 		return true;
