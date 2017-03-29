@@ -8,6 +8,11 @@ public class Point
 		X = x;
 		Y = y;
 	}
+	
+	public void offset(int x, int y){
+		X += x;
+		Y += y;
+	}
 
 	@Override
 	public boolean equals(Object o)

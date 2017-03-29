@@ -30,7 +30,7 @@ public class TerrainData
 
 		originOffset = originBlockX * 128 + originBlockZ * 2048;
 		
-		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount * 128);
+		byteCells = ByteBuffer.allocateDirect(blockCount * blockCount * 512);
 		mCells = byteCells.asIntBuffer();
 		System.out.println(String.format(("terrain loading finished\nchunk count: %d\nbuffer size: %d\norigin: %d, %d"), new Object[]{ chunkCount * chunkCount, byteCells.capacity(), originBlockX, originBlockZ }));
 	}

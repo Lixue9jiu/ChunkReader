@@ -27,7 +27,7 @@ public class TerrainReader124 implements TerrainReader
 				int x = Utils.readInt(mFile);
 				int y = Utils.readInt(mFile);
 				int off = Utils.readInt(mFile);
-				if (off != -1)
+				if (off != 0)
 				{
 					chunkOffsets.put(new Point(x, y), off);
 					chunkEnd++;
@@ -59,6 +59,7 @@ public class TerrainReader124 implements TerrainReader
 					for (int y = 0; y < 16; y++){
 						index = data.calculateCellIndex(chunk.X * 16 + x, 0, chunk.Y * 16 + y);
 //						data.setBytes(index * 2, mBuffer.array());
+						
 						k = 0;
 						while(k < 128){
 							data.setCellFast(index, mBuffer.getShort());

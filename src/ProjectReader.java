@@ -50,7 +50,10 @@ public class ProjectReader implements Destroyable {
                             gameInfo.setValue(parser);
                         }else if ("Player".equals(fatherNodes.peek()) && "SpawnPosition".equals(parser.getAttributeValue(0))) {
                             String[] str = parser.getAttributeValue(2).split(",");
-                            opt.origin = new Point(((int) Float.parseFloat(str[0])) / 16, ((int) Float.parseFloat(str[2])) / 16);
+							if (!opt.isInited) {
+								opt.origin = new Point(((int) Float.parseFloat(str[0])) / 16, ((int) Float.parseFloat(str[2])) / 16);
+								opt.origin.offset(opt.chunkCount / 2, opt.chunkCount / 2);
+							}
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -86,6 +89,10 @@ public class ProjectReader implements Destroyable {
     public boolean isDestroyed() {
         return isAvaliable;
     }
+	
+	public GameInfo GameInfo() {
+		return gameInfo;
+	}
 
     public class GameInfo {
         public int WorldSeed;

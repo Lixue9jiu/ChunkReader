@@ -12,7 +12,12 @@ public class World implements Destroyable
 
 	public World(String path, Option opt)
 	{
-		m_opt = opt != null ? opt : new Option();
+		if(opt != null){
+			m_opt = opt;
+		}else{
+			m_opt = new Option();
+			m_opt.isInited = false;
+		}
 		m_path = path;
 
 		File project;
@@ -87,5 +92,7 @@ public class World implements Destroyable
 	{
 		public Point origin;
 		public int chunkCount = 16;
+		
+		boolean isInited = true;
 	}
 }
